@@ -15,12 +15,21 @@ namespace SignalRTest
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddSignalR();
+			services.AddCors(options =>
+			{
+				options.AddPolicy("AllowAny", x => {
+					x.AllowAnyHeader()
+					.AllowAnyMethod()
+					.AllowAnyOrigin();
+				});
+			});
 			services.AddMvc();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 		{
+			app.UseCors("AllowAny");
 			app.UseSignalR(routes =>
 			{
 				routes.MapHub<MessageHub>("/message");

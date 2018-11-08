@@ -3,7 +3,7 @@ import {
   OnInit
 } from '@angular/core';
 import {
-  HubConnection, HubConnectionBuilder
+  HttpTransportType, HubConnectionBuilder
 } from '@aspnet/signalr'
 
 @Component({
@@ -17,7 +17,10 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     //HubConnection ha un costruttore privato. Per crearlo devo usare ConnectionBuilder
     let builder = new HubConnectionBuilder();
-    builder.withUrl('http://localhost:5000/api/message');
+    builder.withUrl('http://localhost:5000/api/message', {
+      skipNegotiation: true,
+      transport: HttpTransportType.WebSockets
+    });
     //Poi buildo connection
     var connection = builder.build();
 
@@ -26,6 +29,6 @@ export class AppComponent implements OnInit {
     });
 
     connection.start()
-      .then(() => connection.invoke('send', 'Hello'));
+      .then(() => console.log("Connected"));
   }
 }
